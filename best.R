@@ -17,17 +17,19 @@ best <- function(state, outcome) {
                 stop("invalid outcome")
         }
         
-        if (outcome == "heart attack") {
-                noNAOutcomeData <- cbind(outcomeData[, 2][!is.na(outcomeData[, 11])], outcomeData[, 11][!is.na(outcomeData[, 11])])
-                
-        } else if (outcome == "heart failure") {
-                noNAOutcomeData <- cbind(outcomeData[, 2][!is.na(outcomeData[, 17])], outcomeData[, 17][!is.na(outcomeData[, 17])])
-        } else if (outcome == "pneumonia") {
-                noNAOutcomeData <- cbind(outcomeData[, 2][!is.na(outcomeData[, 23])], outcomeData[, 23][!is.na(outcomeData[, 23])])
-        }
-        minMortRate <- min(noNAOutcomeData[, 2])
-        bestHospitalsBoolean <- minMortRate == noNAOutcomeData[, 2]
-        bestHospitals <- noNAOutcomeData[, 1][bestHospitalsBoolean]
+        
         ## Return hospital name in that state with lowest 30-day death
         ## rate
+        if (outcome == "heart attack") {
+                noNAOutcomeData <- cbind.data.frame(outcomeData[, 2][!is.na(outcomeData[, 11])], outcomeData[, 7][!is.na(outcomeData[, 11])], as.numeric(outcomeData[, 11][!is.na(outcomeData[, 11])]), stringsAsFactors = FALSE)
+        } else if (outcome == "heart failure") {
+                noNAOutcomeData <- cbind.data.frame(outcomeData[, 2][!is.na(outcomeData[, 17])], outcomeData[, 7][!is.na(outcomeData[, 17])], as.numeric(outcomeData[, 17][!is.na(outcomeData[, 17])]), stringsAsFactors = FALSE)
+        } else if (outcome == "pneumonia") {
+                noNAOutcomeData <- cbind.data.frame(outcomeData[, 2][!is.na(outcomeData[, 23])], outcomeData[, 7][!is.na(outcomeData[, 23])], as.numeric(outcomeData[, 23][!is.na(outcomeData[, 23])]), stringsAsFactors = FALSE)
+        }
+        noNAOutcomeData <- cbind.data.frame(noNAOutcomeData[,1][noNAOutcomeData[,2] == state], noNAOutcomeData[,2][noNAOutcomeData[,2] == state], noNAOutcomeData[,3][noNAOutcomeData[,2] == state], stringsAsFactors = FALSE)
+        minMortRate <- min(noNAOutcomeData[, 3])
+        bestHospitalsBoolean <- minMortRate == noNAOutcomeData[, 3]
+        bestHospitals <- noNAOutcomeData[, 1][bestHospitalsBoolean]
+        return(min(bestHospitals))
 }
